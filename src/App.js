@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import NoteForm from './components/NoteForm'
+import Togglable from './components/Togglable'
 import Footer from './components/Footer'
 import noteService from './services/notes'
 import loginService from './services/login' 
@@ -10,6 +13,7 @@ const App = () => {
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   const [username, setUsername] = useState('mluukkai') 
   const [password, setPassword] = useState('mluukkai') 
@@ -101,37 +105,25 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>      
+    <Togglable buttonLabel="log in">
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </Togglable>
   )
 
   const noteForm = () => (
-    <form onSubmit={addNote}>
-      <input
+    <Togglable buttonLabel="new note">
+      <NoteForm
+        onSubmit={addNote}
         value={newNote}
-        onChange={handleNoteChange}
+        handleChange={handleNoteChange}
       />
-      <button type="submit">save</button>
-    </form>  
+    </Togglable>
   )
 
   return (
