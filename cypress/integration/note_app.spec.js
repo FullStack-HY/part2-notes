@@ -59,12 +59,9 @@ describe('Note app', function() {
         })
 
         it('one of those can be made important', function () {
-          cy.contains('second note')
-            .contains('make important')
-            .click()
-
-          cy.contains('second note')
-            .contains('make not important')
+          cy.contains('second note').parent().find('button').as('theButton')
+          cy.get('@theButton').click()
+          cy.get('@theButton').should('contain', 'make not important')
         })
       })
     })
