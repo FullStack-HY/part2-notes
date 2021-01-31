@@ -7,7 +7,7 @@ describe('Note app', function() {
       password: 'salainen'
     }
     cy.request('POST', 'http://localhost:3001/api/users/', user)
-    cy.visit('http://localhost:3000')
+    cy.visit('http://localhost:3002')
   })
 
   it('front page can be opened', function() {
@@ -24,7 +24,7 @@ describe('Note app', function() {
     cy.contains('Matti Luukkainen logged in')
   })
 
-  it.only('login fails with wrong password', function() {
+  it('login fails with wrong password', function() {
     cy.contains('log in').click()
     cy.get('#username').type('mluukkai')
     cy.get('#password').type('wrong')
@@ -51,20 +51,21 @@ describe('Note app', function() {
     })
 
     describe('and a note exists', function () {
-      beforeEach(function () {
-        cy.createNote({
-          content: 'another note cypress',
-          important: false
+      describe('and several notes exist', function () {
+        beforeEach(function () {
+          cy.createNote({ content: 'first note', important: false })
+          cy.createNote({ content: 'second note', important: false })
+          cy.createNote({ content: 'third note', important: false })
         })
-      })
 
-      it('it can be made important', function () {
-        cy.contains('another note cypress')
-          .contains('make important')
-          .click()
+        it('one of those can be made important', function () {
+          cy.contains('second note')
+            .contains('make important')
+            .click()
 
-        cy.contains('another note cypress')
-          .contains('make not important')
+          cy.contains('second note')
+            .contains('make not important')
+        })
       })
     })
   })
