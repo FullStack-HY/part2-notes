@@ -15,7 +15,7 @@ describe('Note app', function() {
     cy.contains('Note app, Department of Computer Science, University of Helsinki 2021')
   })
 
-  it('login form can be opened', function() {
+  it('user can login with good credentials', function() {
     cy.contains('log in').click()
     cy.get('#username').type('mluukkai')
     cy.get('#password').type('salainen')
@@ -24,12 +24,23 @@ describe('Note app', function() {
     cy.contains('Matti Luukkainen logged in')
   })
 
+  it.only('login fails with wrong password', function() {
+    cy.contains('log in').click()
+    cy.get('#username').type('mluukkai')
+    cy.get('#password').type('wrong')
+    cy.get('#login-button').click()
+
+    cy.get('.error')
+      .should('contain', 'wrong credentials')
+      .and('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border-style', 'solid')
+
+    cy.get('html').should('not.contain', 'Matti Luukkainen logged in')
+  })
+
   describe('when logged in', function() {
     beforeEach(function() {
-      cy.contains('log in').click()
-      cy.get('input:first').type('mluukkai')
-      cy.get('input:last').type('salainen')
-      cy.get('#login-button').click()
+      cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
     it('a new note can be created', function() {
@@ -41,9 +52,10 @@ describe('Note app', function() {
 
     describe('and a note exists', function () {
       beforeEach(function () {
-        cy.contains('new note').click()
-        cy.get('input').type('another note cypress')
-        cy.contains('save').click()
+        cy.createNote({
+          content: 'another note cypress',
+          important: false
+        })
       })
 
       it('it can be made important', function () {
