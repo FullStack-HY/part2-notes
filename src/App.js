@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [ persons, setPersons ] = useState([
-    { id: 1,
-      name: 'Arto Hellas',
+    { name: 'Arto Hellas',
       phone: '666-666-666'
     }
   ]) 
   const [ newName, setNewName ] = useState('')
-  const [ newPhone, setNewPhone ] = useState(' ')
+  const [ newPhone, setNewPhone ] = useState('')
+  const [ filterText, setNewFilter ] = useState('')
 
   const submitHandler = (event) => {
     event.preventDefault()
@@ -19,7 +19,6 @@ const App = () => {
       window.alert(`${newName} is already added`)
     } else {
         let nameSubmit = {
-          id: persons.length + 1,
           name: newName,
           phone: newPhone
         }
@@ -37,9 +36,21 @@ const App = () => {
     setNewPhone(event.target.value)
   }
 
+  const personsToShow = filterText.length > 0
+    ? persons.filter(person => person.name.toLowerCase().includes(filterText))
+    : persons
+
+  const filterChangeHandler = (event) => {
+    setNewFilter(event.target.value)
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>filter shown with:
+        <input value={filterText} onChange={filterChangeHandler}/>
+      </div>
+      <h2>Add a new</h2>
       <form onSubmit={submitHandler}>
         <div>name:
           <input value={newName} onChange={nameChangeHandler}/>
@@ -53,8 +64,8 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map(person => 
-        <li key={person.id}>{person.name}, {person.phone}</li>)}
+        {personsToShow.map(person => 
+        <li key={person.name}>{person.name}, {person.phone}</li>)}
       </ul>
     </div>
   )
