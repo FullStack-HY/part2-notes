@@ -9,12 +9,19 @@ const App = () => {
 
   const nameHandler = (event) => {
     event.preventDefault()
-    let nameSubmit = {
-      id: persons.length + 1,
-      name: newName
+    //check if name is in phonebook
+    let names = persons.map(person => person.name)
+    console.log(names);
+    if (names.includes(newName)){
+      window.alert(`${newName} is already added`)
+    } else {
+        let nameSubmit = {
+          id: persons.length + 1,
+          name: newName
+        }
+        setPersons(persons.concat(nameSubmit))
+        setNewName('')
     }
-    setPersons(persons.concat(nameSubmit))
-    setNewName('')
   }
 
   const nameChangeHandler = (event) => {
