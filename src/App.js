@@ -1,14 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchFilter from './components/SearchFilter'
 import AddNew from './components/AddNew'
 import Numbers from './components/Numbers'
+import phonebook from './services/phonebook'
 
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas',
-      phone: '666-666-666'
-    }
-  ]) 
+  const [ persons, setPersons ] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
   const [ filterText, setNewFilter ] = useState('')
@@ -17,7 +14,6 @@ const App = () => {
     event.preventDefault()
     //check if name is in phonebook
     let names = persons.map(person => person.name)
-    console.log(names);
     if (names.includes(newName)){
       window.alert(`${newName} is already added`)
     } else {
@@ -25,11 +21,23 @@ const App = () => {
           name: newName,
           phone: newPhone
         }
-        setPersons(persons.concat(nameSubmit))
-        setNewName('')
-        setNewPhone('')
+        phonebook
+          .create(nameSubmit)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+            setNewName('')
+            setNewPhone('')
+          })
     }
   }
+
+  useEffect(() => {
+    phonebook
+      .getAll()
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
   const nameChangeHandler = (event) => {
     setNewName(event.target.value)

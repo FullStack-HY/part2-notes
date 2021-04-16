@@ -1,0 +1,9 @@
+{
+  "phonebook": [
+    {
+      "id": 1,
+      "name": "Arto Hellas",
+      "phone": "666-666-666"
+    }
+  ]
+}
